@@ -4,11 +4,87 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+    provider = "prisma-client"
+    output   = "../lib/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
+enum UserRole {
+    USER
+    ADMIN
+}
+
+enum Difficulty {
+    EASY
+    MEDIUM
+    HARD
+}
+
+model User {
+    id      String   @id @default(cuid())
+    clerkId String   @unique
+    name    String?
+    email   String   @unique
+    role    UserRole @default(USER)
+
+    firstName String?
+    lastName  String?
+    imageUrl  String?
+
+    problems       Problem[]
+    submissions    Submission[]
+    solvedProblems ProblemSolved[]
+    playlists      Playlist[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+}
+
+model Problem {
+    id          String     @id @default(cuid())
+    // basic info
+    title       String
+    description String
+    difficulty  Difficulty
+    tags        String[]
+    examples    Json // because example (if u see in leetcode) -> have input, output and explanation etc
+    constraints String
+    hint        String?
+    editorial   String?
+
+    testCases          Json
+    codeSnippets       Json // the default boiler plate of problemo
+    referenceSolutions Json
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Submission {
+    id String @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProblemSolved {
+    id String @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Playlist {
+    id          String   @id @default(cuid())
+    title       String
+    description String?
+    userId      String
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

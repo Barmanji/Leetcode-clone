@@ -21,3 +21,9 @@ if(process.env.NODE_ENV !=="production"){
     globalForPrisma.prisma = prisma;
 }
 
+
+// Pooling Nextjs hot reload issue, so use above one
+// export const prisma = new PrismaClient({
+// adapter:new PrismaPg({connectionString:process.env.DATABASE_URL})
+// 1
+//
