@@ -3,9 +3,13 @@ services:
     image: postgres:17
     container_name: leetcode_db
     environment:
-      POSTGRES_DB: leetcode
+      POSTGRES_DB: leetcode-clone
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
     ports:
       - "5432:5432"
+    volumes:
+      - leetcode_pg_data:/var/lib/postgresql/data
 
+volumes:
+  leetcode_pg_data:
