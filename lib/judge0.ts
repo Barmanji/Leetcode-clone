@@ -1,12 +1,13 @@
 import axios from "axios";
 
-export function getJudge0languageId(language: string) {
+const JUDGE0_BASE_URL = process.env.JUDGE0_URL || "http://localhost:2358";
+export function getJudge0languageId(language: string): number | undefined {
   const languageMap = {
     // rather than hitting DB just for id we made a map which we are just hitting rn.
     PYTHON: 71,
     JAVASCRIPT: 63,
     JAVA: 62,
-    CPP: 105,
+    CPP: 54,
     TYPESCRIPT: 74,
     RUST: 73,
   };
@@ -30,13 +31,11 @@ export async function submitBatch(submissions: any) {
   // copy as it is from judge0 docs, we are just hitting the endpoint with our submissions array
   const options = {
     method: "POST",
-    url: "https://judge0-extra-ce1.p.rapidapi.com/submissions/batch",
+url: `${JUDGE0_BASE_URL}/submissions/batch`,
     params: {
       base64_encoded: "false",
     },
     headers: {
-      "x-rapidapi-key": "b796e8b7c5msh9058e6cb0fa4762p145922jsn1376a7693b28",
-      "x-rapidapi-host": "judge0-extra-ce1.p.rapidapi.com",
       "Content-Type": "application/json",
     },
     data: {
@@ -54,16 +53,14 @@ export async function pollBatchResults(tokens: string[]) {
   while (true) {
     const options = {
       // get submission by tokens, copy from docs (rapid API)
-      method: "GET",
-      url: "https://judge0-extra-ce1.p.rapidapi.com/submissions/batch",
+method: "GET",
+      url: `${JUDGE0_BASE_URL}/submissions/batch`,
       params: {
-        tokens: tokens.join(","), // because docs say it should be comma separated string
-        base64_encoded: "true",
+        tokens: tokens.join(","),
+        base64_encoded: "false",
         fields: "*",
       },
       headers: {
-        "x-rapidapi-key": "b796e8b7c5msh9058e6cb0fa4762p145922jsn1376a7693b28",
-        "x-rapidapi-host": "judge0-extra-ce1.p.rapidapi.com",
         "Content-Type": "application/json",
       },
     };
