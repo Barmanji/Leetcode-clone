@@ -60,6 +60,13 @@ if (!user || !('id' in user)) {
       // 1.get judge0 language id for current lang
       const languageId = getJudge0languageId(language); // rather than hitting DB just for id we made a map which we are just hitting rn.
 
+      if (!languageId) {
+        return NextResponse.json(
+          { error: `Unsupported language: ${language}` },
+          { status: 400 },
+        );
+      }
+
       // 2. prepare judge0 submissions for all test cases
 
       const submissions = testCases.map(({ input, output }) => ({
@@ -70,12 +77,22 @@ if (!user || !('id' in user)) {
       }));
       // 3. Submit all testcases in one batch
 
-      const submissionResults = await submitBatch(submissions);
-      // 4. Extract tokens from response
-      const tokens = submissionResults.map((res: any) => res.token);
+      let submissionResults;
+      let results;
+      try {
+        submissionResults = await submitBatch(submissions);
+        // 4. Extract tokens from response
+        const tokens = submissionResults.map((res: any) => res.token);
 
-      // 5. Poll judge0 until all submissions are done
-      const results = await pollBatchResults(tokens);
+        // 5. Poll judge0 until all submissions are done
+        results = await pollBatchResults(tokens);
+      } catch (judge0Error) {
+        console.error("Judge0 error:", judge0Error);
+        return NextResponse.json(
+          { error: "Judge0 is unreachable or failed to process submissions" },
+          { status: 502 },
+        );
+      }
       // 6. validate that each test cases
 
       for (let i = 0; i < results.length; i++) {
@@ -99,20 +116,29 @@ if (!user || !('id' in user)) {
       }
     }
 
-    const newProblem = await prisma.problem.create({
-      data: {
-        title,
-        description,
-        difficulty,
-        tags,
-        examples,
-        constraints,
-        testCases,
-        codeSnippets,
-        referenceSolutions,
-        userId: user.id,
-      },
-    });
+    let newProblem;
+    try {
+      newProblem = await prisma.problem.create({
+        data: {
+          title,
+          description,
+          difficulty,
+          tags,
+          examples,
+          constraints,
+          testCases,
+          codeSnippets,
+          referenceSolutions,
+          userId: user.id,
+        },
+      });
+    } catch (dbError) {
+      console.error("Database error:", dbError);
+      return NextResponse.json(
+        { error: "Failed to save problem to database" },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json(
       {
@@ -123,9 +149,9 @@ if (!user || !('id' in user)) {
       { status: 201 },
     );
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("Unexpected error:", error);
     return NextResponse.json(
-      { error: "Failed to save problem to database" },
+      { error: "Internal server error" },
       { status: 500 },
     );
   }
