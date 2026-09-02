@@ -8,6 +8,9 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.agents/
+.claude/
+.windsurf/
 
 # testing
 /coverage
