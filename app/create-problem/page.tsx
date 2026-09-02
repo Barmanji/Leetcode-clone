@@ -27,7 +27,6 @@ const CreateProblemPage = async() => {
         </div>
 
     <CreateProblemForm/>
-
     </section>
   )
 }
