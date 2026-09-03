@@ -1,16 +1,30 @@
 import Image from "next/image";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 import { onBoardUser } from "@/modules/auth/actions";
-import { ChevronRight, Code2, Play, Star, Trophy, Users, Zap } from "lucide-react";
+import {
+  ChevronRight,
+  Code2,
+  Play,
+  Star,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
 
 export default async function Home() {
   await onBoardUser();
 
-    const features = [
+  const features = [
     {
       icon: <Code2 className="w-6 h-6" />,
       title: "Interactive Coding",
@@ -71,9 +85,8 @@ export default async function Home() {
     },
   ];
 
-
   return (
-      <div className="min-h-screen  transition-colors mt-24">
+    <div className="min-h-screen  transition-colors mt-24">
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col justify-center items-center px-4 pt-16">
         <div className="max-w-6xl mx-auto text-center">
@@ -118,7 +131,7 @@ export default async function Home() {
               className="bg-amber-500 hover:bg-amber-600 dark:bg-amber-400 dark:hover:bg-amber-500 text-white dark:text-gray-900 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
             >
               <Play className="w-5 h-5 mr-2" />
-              Start Coding Now
+              <Link href="/problems">Start Coding Now</Link>
               <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
@@ -126,7 +139,7 @@ export default async function Home() {
               size="lg"
               className="border-2 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950"
             >
-              Browse Problems
+              <Link href="/problems">Browse Problems</Link>
             </Button>
           </div>
 
@@ -259,7 +272,7 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-amber-600 to-amber-300  dark:from-amber-600 dark:to-indigo-600 rounded-md">
+      <section className="py-24 bg-linear-to-r from-amber-600 to-amber-300  dark:from-amber-600 dark:to-indigo-600 rounded-md">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to start your coding journey?
@@ -272,7 +285,7 @@ export default async function Home() {
             size="lg"
             className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg"
           >
-            Get Started for Free
+            <Link href="/problems">Get Started for free</Link>
           </Button>
         </div>
       </section>

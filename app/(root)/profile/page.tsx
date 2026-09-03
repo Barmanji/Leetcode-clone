@@ -9,6 +9,7 @@ const ProfilePage = async() => {
     const profileData = await getCurrentUserData()
 
   return (
+    // TODO: There shan't be error in profile page even with a user with 0 submissions
     <div className='min-h-screen py-32'>
         <div className='container mx-auto px-4 max-w-7xl'>
             <UserInfoCard userData={profileData}/>
