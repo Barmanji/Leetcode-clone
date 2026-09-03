@@ -31,7 +31,7 @@ export async function submitBatch(submissions: any) {
   // copy as it is from judge0 docs, we are just hitting the endpoint with our submissions array
   const options = {
     method: "POST",
-url: `${JUDGE0_BASE_URL}/submissions/batch`,
+    url: `${JUDGE0_BASE_URL}/submissions/batch`,
     params: {
       base64_encoded: "false",
     },
@@ -53,7 +53,7 @@ export async function pollBatchResults(tokens: string[]) {
   while (true) {
     const options = {
       // get submission by tokens, copy from docs (rapid API)
-method: "GET",
+      method: "GET",
       url: `${JUDGE0_BASE_URL}/submissions/batch`,
       params: {
         tokens: tokens.join(","),
@@ -69,7 +69,8 @@ method: "GET",
 
     const results = data.submissions; // contains submission arr (look below for example)
 
-    const isAllDone = results.every( // the logic is in docs, status_id after 3 means something is wrong with code. (there are 14 status code in docs)
+    const isAllDone = results.every(
+      // the logic is in docs, status_id after 3 means something is wrong with code. (there are 14 status code in docs)
       (r: any) => r.status.id !== 1 && r.status.id !== 2,
     );
 
@@ -79,7 +80,8 @@ method: "GET",
   }
 }
 // basic utlitiy function to sleep for a given number of milliseconds
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 // NOTE: From docs
 // {

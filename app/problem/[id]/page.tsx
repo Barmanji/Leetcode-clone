@@ -16,7 +16,8 @@ const ProblemIdPage = () => {
   const params = useParams<{ id: string }>();
 
   const { problem, isLoading } = useProblem(params.id);
-  const { submissionHistory } = useSubmissionHistory(params.id);
+  const { submissionHistory, refetch: refetchSubmissionHistory } =
+    useSubmissionHistory(params.id);
   const {
     selectedLanguage,
     setSelectedLanguage,
@@ -27,7 +28,7 @@ const ProblemIdPage = () => {
     executionResponse,
     handleRun,
     handleSubmit,
-  } = useEditor(problem);
+  } = useEditor(problem, "JAVASCRIPT", refetchSubmissionHistory);
 
   if (isLoading) {
     return (

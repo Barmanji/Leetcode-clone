@@ -8,7 +8,11 @@ import {
 } from "@/components/ui/select";
 import { Code, Send } from "lucide-react";
 import { useTheme } from "next-themes";
-import { EDITOR_OPTIONS, getEditorLanguage, LANGUAGE_OPTIONS } from "../../constant";
+import {
+  EDITOR_OPTIONS,
+  getEditorLanguage,
+  LANGUAGE_OPTIONS,
+} from "../../constant";
 import { Editor } from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +27,8 @@ const CodeEditorPanel = ({
   isSubmitting,
 }: any) => {
   const { theme } = useTheme();
+
+  const isProcessing = isRunning || isSubmitting;
 
   return (
     <Card>
@@ -49,37 +55,41 @@ const CodeEditorPanel = ({
 
       <CardContent>
         <div className="border rounded-lg overflow-hidden">
-            <Editor
+          <Editor
             height={"400px"}
             language={getEditorLanguage(selectedLanguage)}
             value={code}
             // @ts-ignore
-            onChange={(value:string)=>onCodeChange(value || "")}
-            theme={theme === "dark" ? "vs-dark":"light"}
+            onChange={(value: string) => onCodeChange(value || "")}
+            theme={theme === "dark" ? "vs-dark" : "light"}
             // @ts-ignore
             options={EDITOR_OPTIONS}
-            />
+          />
         </div>
 
         <div className="flex gap-3 mt-4">
+          <div className={isProcessing ? "cursor-not-allowed" : ""}>
             <Button
-            onClick={onRun}
-            disabled={isRunning}
-            variant={"outline"}
-            className="flex items-center gap-2"
+              onClick={onRun}
+              disabled={isProcessing}
+              variant={"outline"}
+              className="flex items-center gap-2 disabled:pointer-events-none disabled:opacity-50 disabled:transition-none disabled:bg-background disabled:text-foreground disabled:border-input"
             >
-                {isRunning ? "Running..." : "Run"}
+              {isRunning ? "Running..." : "Run"}
             </Button>
+          </div>
 
-             <Button
-             variant={"default"}
-            onClick={onSubmit}
-            disabled={isSubmitting}
-            className="flex items-center gap-2"
-          >
-            <Send className="h-4 w-4" />
-            {isSubmitting ? 'Submitting...' : 'Submit'}
-          </Button>
+          <div className={isProcessing ? "cursor-not-allowed" : ""}>
+            <Button
+              variant={"default"}
+              onClick={onSubmit}
+              disabled={isProcessing}
+              className="flex items-center gap-2 disabled:pointer-events-none disabled:opacity-50 disabled:transition-none disabled:bg-primary disabled:text-primary-foreground"
+            >
+              <Send className="h-4 w-4" />
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -2,9 +2,13 @@
 import { getJudge0languageId } from "@/lib/judge0";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { executeCode } from "../actions";
+import { submitCode, runCode } from "../actions";
 
-export function useEditor(problem: any, initialLanguage = "JAVASCRIPT") {
+export function useEditor(
+  problem: any,
+  initialLanguage = "JAVASCRIPT",
+  onSubmissionSuccess?: () => void,
+) {
   const [selectedLanguage, setSelectedLanguage] = useState(initialLanguage);
   const [code, setCode] = useState("");
   const [isRunning, setIsRunning] = useState(false);
@@ -17,32 +21,53 @@ export function useEditor(problem: any, initialLanguage = "JAVASCRIPT") {
     }
   }, [selectedLanguage, problem]);
 
-  const handleRun = () => {
-    // TODO:1.2 Implement it.
-    toast.success("This is your assignment");
+  const handleRun = async () => {
+    try {
+      setIsRunning(true);
+
+      const language_id: any = getJudge0languageId(selectedLanguage);
+      const stdin = problem.testCases.map((tc: any) => tc.input);
+
+      const res = await runCode(code, language_id, stdin);
+      setExecutionResponse(res);
+      if (res.success) {
+        toast.success("Code executed successfully");
+      }
+    } catch (error) {
+      console.error("Error executing code", error);
+      toast.error("Error executing code");
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const handleSubmit = async () => {
     if (!problem) return;
 
     try {
-      setIsRunning(true);
+      setIsSubmitting(true);
       const language_id: any = getJudge0languageId(selectedLanguage);
       const stdin = problem.testCases.map((tc: any) => tc.input);
       const expected_outputs = problem.testCases.map((tc: any) => tc.output);
 
-      const res = await executeCode(code , language_id , stdin , expected_outputs , problem.id);
+      const res = await submitCode(
+        code,
+        language_id,
+        stdin,
+        expected_outputs,
+        problem.id,
+      );
       setExecutionResponse(res);
 
-      if(res.success){
-        toast.success("Code executed successfully")
+      if (res.success) {
+        toast.success("Code executed successfully");
+        onSubmissionSuccess?.();
       }
     } catch (error) {
-       console.error('Error executing code', error);
-      toast.error('Error executing code');
-    }
-    finally{
-      setIsRunning(false)
+      console.error("Error executing code", error);
+      toast.error("Error executing code");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -58,4 +83,3 @@ export function useEditor(problem: any, initialLanguage = "JAVASCRIPT") {
     handleSubmit,
   };
 }
-
