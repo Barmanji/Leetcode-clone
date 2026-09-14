@@ -2,10 +2,9 @@
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import type { FormHeaderProps } from "@/modules/types/components";
 
-// sample type is a smart way to auto-full the data
-export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
+export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHeaderProps) {
   return (
     <CardHeader className="pb-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -24,7 +23,7 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
             variant="secondary"
             size="sm"
             onClick={onLoadSample}
-            className="gap-2"
+            className="gap-2 cursor-pointer"
           >
             <Download className="w-4 h-4" />
             Load Sample
@@ -35,14 +34,14 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
   );
 }
 
-function SampleTypeToggle({ sampleType, setSampleType }: any) {
+function SampleTypeToggle({ sampleType, setSampleType }: { sampleType: string; setSampleType: (type: string) => void }) {
   return (
     <div className="flex border rounded-md">
       <Button
         type="button"
         variant={sampleType === "DP" ? "default" : "outline"}
         size="sm"
-        className="rounded-r-none"
+        className="rounded-r-none cursor-pointer"
         onClick={() => setSampleType("DP")}
       >
         DP Problem
@@ -51,7 +50,7 @@ function SampleTypeToggle({ sampleType, setSampleType }: any) {
         type="button"
         variant={sampleType === "string" ? "default" : "outline"}
         size="sm"
-        className="rounded-l-none"
+        className="rounded-l-none cursor-pointer"
         onClick={() => setSampleType("string")}
       >
         String Problem
@@ -59,4 +58,3 @@ function SampleTypeToggle({ sampleType, setSampleType }: any) {
     </div>
   );
 }
-

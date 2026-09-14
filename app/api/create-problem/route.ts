@@ -6,6 +6,7 @@ import {
   pollBatchResults,
   submitBatch,
 } from "@/lib/judge0";
+import type { Judge0Result } from "@/modules/types/actions";
 
 import { prisma } from "@/lib/db";
 
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
     const userRole = await currentUserRole();
     const user = await getCurrentUserData();
 
-if (!user || !('id' in user)) {
+    if (!user || !("id" in user)) {
       return NextResponse.json({ error: "User not found or Missing ID" });
     }
 
@@ -57,8 +58,7 @@ if (!user || !('id' in user)) {
     }
 
     for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
-      // 1.get judge0 language id for current lang
-      const languageId = getJudge0languageId(language); // rather than hitting DB just for id we made a map which we are just hitting rn.
+      const languageId = getJudge0languageId(language);
 
       if (!languageId) {
         return NextResponse.json(
@@ -67,24 +67,20 @@ if (!user || !('id' in user)) {
         );
       }
 
-      // 2. prepare judge0 submissions for all test cases
-
-      const submissions = testCases.map(({ input, output }) => ({
-        source_code: solutionCode, // these fiels are from their DOCs API hints
+      const submissions = testCases.map(({ input, output }: { input: string; output: string }) => ({
+        source_code: solutionCode as string,
         language_id: languageId,
         stdin: input,
         expected_output: output,
+        base64_encoded: false as const,
+        wait: false as const,
       }));
-      // 3. Submit all testcases in one batch
 
       let submissionResults;
-      let results;
+      let results: Judge0Result[];
       try {
         submissionResults = await submitBatch(submissions);
-        // 4. Extract tokens from response
-        const tokens = submissionResults.map((res: any) => res.token);
-
-        // 5. Poll judge0 until all submissions are done
+        const tokens = submissionResults.map((res) => res.token);
         results = await pollBatchResults(tokens);
       } catch (judge0Error) {
         console.error("Judge0 error:", judge0Error);
@@ -93,12 +89,11 @@ if (!user || !('id' in user)) {
           { status: 502 },
         );
       }
-      // 6. validate that each test cases
 
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
 
-        if (result.status.id !== 3) { // result id 3 is for success in docs (there are 14 diff ID)
+        if (result.status.id !== 3) {
           return NextResponse.json(
             {
               error: `Validation failed for ${language}`,

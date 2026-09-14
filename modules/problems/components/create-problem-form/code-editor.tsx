@@ -1,7 +1,7 @@
 "use client";
 import { Editor } from "@monaco-editor/react";
 
-const LANGUAGE_MAP = {
+const LANGUAGE_MAP: Record<string, string> = {
   javascript: "javascript",
   python: "python",
   java: "java",
@@ -10,7 +10,13 @@ const LANGUAGE_MAP = {
   typescript: "typescript",
 };
 
-export function CodeEditor({ value, onChange, language = "javascript" }: any) {
+interface CodeEditorFormProps {
+  value: string;
+  onChange: (value: string) => void;
+  language?: string;
+}
+
+export function CodeEditor({ value, onChange, language = "javascript" }: CodeEditorFormProps) {
   return (
     <div className="border rounded-md bg-slate-950 text-slate-50">
       <div className="px-4 py-2 bg-slate-800 border-b text-sm font-mono">
@@ -20,10 +26,10 @@ export function CodeEditor({ value, onChange, language = "javascript" }: any) {
       <div className="h-75 w-full">
         <Editor
           height={"300px"}
-          defaultLanguage={LANGUAGE_MAP[language as keyof typeof LANGUAGE_MAP] || "javascript"}
+          defaultLanguage={LANGUAGE_MAP[language] || "javascript"}
           theme="vs-dark"
           value={value}
-          onChange={onChange}
+          onChange={(val: string | undefined) => onChange(val || "")}
           options={{
             minimap: { enabled: false },
             fontSize: 18,
@@ -39,4 +45,3 @@ export function CodeEditor({ value, onChange, language = "javascript" }: any) {
     </div>
   );
 }
-
