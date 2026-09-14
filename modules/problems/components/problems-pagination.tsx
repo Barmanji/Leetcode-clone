@@ -1,10 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import type { ProblemsPaginationProps } from "@/modules/types/components";
 
-/**
- * Pagination controls with previous/next buttons and page info
- */
 export function ProblemsPagination({
   currentPage,
   totalPages,
@@ -13,22 +11,21 @@ export function ProblemsPagination({
   canGoNext,
   onPrevious,
   onNext,
-}:any) {
+}: ProblemsPaginationProps) {
   return (
     <div className="flex items-center justify-between">
-      {/* Results count */}
       <p className="text-sm text-muted-foreground">
         Showing {displayRange.start} to {displayRange.end} of{" "}
         {displayRange.total} problems
       </p>
 
-      {/* Navigation buttons */}
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
           disabled={!canGoPrevious}
           onClick={onPrevious}
+          className="cursor-pointer"
         >
           Previous
         </Button>
@@ -42,6 +39,7 @@ export function ProblemsPagination({
           size="sm"
           disabled={!canGoNext}
           onClick={onNext}
+          className="cursor-pointer"
         >
           Next
         </Button>
@@ -49,4 +47,3 @@ export function ProblemsPagination({
     </div>
   );
 }
-

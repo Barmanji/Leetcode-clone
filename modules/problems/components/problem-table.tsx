@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "sonner";
 import { ProblemsHeader } from "./problems-header";
 import { useProblemFilters } from "../hooks/use-problem-filter";
 import { ProblemsFilters } from "./problem-filters";
@@ -18,21 +17,23 @@ import { ProblemsPagination } from "./problems-pagination";
 import CreatePlaylistModal from "@/modules/playlists/components/create-playlist";
 import { usePlaylistActions } from "@/modules/playlists/hooks/use-playlist-action";
 import AddToPlaylistModal from "@/modules/playlists/components/add-to-playlist";
+import type { Problem, UserData } from "@/modules/types/problem";
 
-const ProblemsTable = ({problems=[] , user}:any) => {
+interface ProblemsTableProps {
+  problems: Problem[];
+  user: UserData | null;
+}
 
+const ProblemsTable = ({ problems = [], user }: ProblemsTableProps) => {
   const filters = useProblemFilters(problems);
   const pagination = usePagination(filters.filteredProblems);
   const playlist = usePlaylistActions();
 
-  console.log("Filtered Problems:", filters.filteredProblems);
-  console.log("Current Page Problems:", pagination.paginatedItems);
-
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 p-6">
-      <ProblemsHeader onCreatePlaylist={playlist.openCreateModal}/>
+      <ProblemsHeader onCreatePlaylist={playlist.openCreateModal} />
 
-        <ProblemsFilters
+      <ProblemsFilters
         search={filters.search}
         onSearchChange={filters.setSearch}
         difficulty={filters.difficulty}
@@ -40,12 +41,11 @@ const ProblemsTable = ({problems=[] , user}:any) => {
         selectedTag={filters.selectedTag}
         onTagChange={filters.setSelectedTag}
         allTags={filters.allTags}
+      />
 
-        />
-
-        <Card>
-          <CardContent>
-             <Table>
+      <Card>
+        <CardContent>
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Solved</TableHead>
@@ -57,12 +57,12 @@ const ProblemsTable = ({problems=[] , user}:any) => {
             </TableHeader>
             <TableBody>
               {pagination.paginatedItems.length > 0 ? (
-                pagination.paginatedItems.map((problem: any) => (
+                pagination.paginatedItems.map((problem) => (
                   <ProblemRow
                     key={problem.id}
                     problem={problem}
                     user={user}
-                    onDelete={()=>{}}
+                    onDelete={() => {}}
                     onSave={playlist.openAddToPlaylist}
                   />
                 ))
@@ -71,10 +71,9 @@ const ProblemsTable = ({problems=[] , user}:any) => {
               )}
             </TableBody>
           </Table>
-          </CardContent>
-        </Card>
+        </CardContent>
+      </Card>
 
-        {/* Pagination */}
       {pagination.showPagination && (
         <ProblemsPagination
           currentPage={pagination.currentPage}
@@ -88,22 +87,19 @@ const ProblemsTable = ({problems=[] , user}:any) => {
       )}
 
       <CreatePlaylistModal
-      isOpen={playlist.isCreateModalOpen}
-      onClose={playlist.closeCreateModal}
-      onSubmit={playlist.handleCreatePlaylist}
+        isOpen={playlist.isCreateModalOpen}
+        onClose={playlist.closeCreateModal}
+        onSubmit={playlist.handleCreatePlaylist}
       />
 
       <AddToPlaylistModal
-      isOpen={playlist.isAddToPlaylistModalOpen}
-      onClose={playlist.closeAddToPlaylistModal}
-      onSubmit={playlist.handleAddToPlaylist}
-      problemId={playlist.selectedProblemId}
-
+        isOpen={playlist.isAddToPlaylistModalOpen}
+        onClose={playlist.closeAddToPlaylistModal}
+        onSubmit={playlist.handleAddToPlaylist}
+        problemId={playlist.selectedProblemId}
       />
-
     </div>
-  )
-}
+  );
+};
 
-export default ProblemsTable
-
+export default ProblemsTable;

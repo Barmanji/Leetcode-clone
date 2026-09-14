@@ -8,60 +8,39 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getDifficultyColor } from "../constant";
-
-type Problem = {
-  id: string;
-  title: string;
-  tags?: string[];
-  difficulty?: "EASY" | "MEDIUM" | "HARD";
-  solvedBy?: unknown[];
-};
-
-type User = {
-  role?: string;
-} | null;
+import type { Problem, UserData } from "@/modules/types/problem";
 
 type OnAction = (problemId: string) => void;
 
-/**
- * Single row in the problems table
- */
+interface ProblemRowProps {
+  problem: Problem;
+  user?: UserData | null;
+  onDelete: OnAction;
+  onSave: OnAction;
+}
+
 export function ProblemRow({
   problem,
   user,
   onDelete,
   onSave,
-}: {
-  problem: Problem;
-  user?: User;
-  onDelete: OnAction;
-  onSave: OnAction;
-}) {
+}: ProblemRowProps) {
   const isSolved = (problem.solvedBy?.length ?? 0) > 0;
 
   return (
     <TableRow>
-      {/* Solved checkbox */}
       <TableCell>
         <SolvedCheckbox checked={isSolved} />
       </TableCell>
-
-      {/* Title with link */}
       <TableCell className="font-medium">
         <ProblemTitle id={problem.id} title={problem.title} />
       </TableCell>
-
-      {/* Tags */}
       <TableCell>
         <TagsList tags={problem.tags} />
       </TableCell>
-
-      {/* Difficulty badge */}
       <TableCell>
         <DifficultyBadge difficulty={problem.difficulty} />
       </TableCell>
-
-      {/* Action buttons */}
       <TableCell>
         <ActionButtons
           problemId={problem.id}
@@ -74,9 +53,6 @@ export function ProblemRow({
   );
 }
 
-/**
- * Checkbox showing if problem is solved
- */
 function SolvedCheckbox({ checked }: { checked: boolean }) {
   return (
     <Checkbox
@@ -87,23 +63,17 @@ function SolvedCheckbox({ checked }: { checked: boolean }) {
   );
 }
 
-/**
- * Problem title with link to problem page
- */
 function ProblemTitle({ id, title }: { id: string; title: string }) {
   return (
     <Link
       href={`/problem/${id}`}
-      className="text-primary hover:underline transition-colors"
+      className="text-primary hover:underline transition-colors cursor-pointer"
     >
       {title}
     </Link>
   );
 }
 
-/**
- * List of tag badges
- */
 function TagsList({ tags = [] }: { tags?: string[] }) {
   return (
     <div className="flex flex-wrap gap-1">
@@ -120,25 +90,18 @@ function TagsList({ tags = [] }: { tags?: string[] }) {
   );
 }
 
-/**
- * Difficulty badge with color
- */
 function DifficultyBadge({
   difficulty,
 }: {
   difficulty?: "EASY" | "MEDIUM" | "HARD";
 }) {
   return (
-    // @ts-ignore
-    <Badge className={`${getDifficultyColor(difficulty)} border-0 font-medium`}>
+    <Badge className={`${getDifficultyColor(difficulty ?? "EASY")} border-0 font-medium`}>
       {difficulty}
     </Badge>
   );
 }
 
-/**
- * Action buttons (delete, edit, save to playlist)
- */
 function ActionButtons({
   problemId,
   isAdmin,
@@ -158,10 +121,11 @@ function ActionButtons({
             variant="destructive"
             size="sm"
             onClick={() => onDelete(problemId)}
+            className="cursor-pointer"
           >
             <TrashIcon className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" disabled>
+          <Button variant="outline" size="sm" disabled className="cursor-pointer">
             <PencilIcon className="h-4 w-4" />
           </Button>
         </>
@@ -170,7 +134,7 @@ function ActionButtons({
         variant="outline"
         size="sm"
         onClick={() => onSave(problemId)}
-        className="gap-2"
+        className="gap-2 cursor-pointer"
       >
         <Bookmark className="h-4 w-4" />
         <span className="hidden sm:inline">Save</span>

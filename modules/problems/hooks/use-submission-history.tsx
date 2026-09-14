@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { getAllSubmissionByCurrentUserForProblem } from "../actions";
+import type { Submission } from "@/modules/types/problem";
 
 export function useSubmissionHistory(id: string) {
-  const [submissionHistory, setSubmissionHistory] = useState([]);
+  const [submissionHistory, setSubmissionHistory] = useState<Submission[]>([]);
 
   const fetchSubmissionHistory = async () => {
     try {
       const response = await getAllSubmissionByCurrentUserForProblem(id);
       if (response.success) {
-        setSubmissionHistory((response as any).data);
+        setSubmissionHistory(response.data as Submission[]);
       }
     } catch (error) {
       console.error("Error fetching submission history:", error);

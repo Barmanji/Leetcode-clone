@@ -2,12 +2,9 @@
 
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { ProblemsHeaderProps } from "@/modules/types/components";
 
-
-export function ProblemsHeader({ onCreatePlaylist }:any) {
-
-  console.log(onCreatePlaylist)
-
+export function ProblemsHeader({ onCreatePlaylist }: ProblemsHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
@@ -16,7 +13,7 @@ export function ProblemsHeader({ onCreatePlaylist }:any) {
           Manage and solve coding problems
         </p>
       </div>
-      <Button onClick={onCreatePlaylist} className="gap-2">
+      <Button onClick={onCreatePlaylist} className="gap-2 cursor-pointer">
         <Plus className="h-4 w-4" />
         Create Playlist
       </Button>
