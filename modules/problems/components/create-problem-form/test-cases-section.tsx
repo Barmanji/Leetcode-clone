@@ -5,8 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import type { UseFormReturn } from "react-hook-form";
+import type { z } from "zod";
+import type { problemSchema } from "@/modules/problems/schema";
 
-export function TestCasesSection({ form, testCasesArray }: any) {
+type ProblemFormData = z.infer<typeof problemSchema>;
+
+interface TestCasesSectionProps {
+  form: UseFormReturn<ProblemFormData>;
+  testCasesArray: {
+    fields: { id: string }[];
+    append: (value: { input: string; output: string }) => void;
+    remove: (index: number) => void;
+  };
+}
+
+export function TestCasesSection({ form, testCasesArray }: TestCasesSectionProps) {
   const {
     register,
     formState: { errors },
@@ -26,19 +40,18 @@ export function TestCasesSection({ form, testCasesArray }: any) {
             type="button"
             size="sm"
             onClick={() => append({ input: "", output: "" })}
-            className="gap-2"
+            className="gap-2 cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Add Test Case
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {fields.map((field: any, index: any) => (
+        {fields.map((field, index) => (
           <TestCaseCard
             key={field.id}
             index={index}
             register={register}
-            errors={errors}
             onRemove={() => remove(index)}
             canRemove={fields.length > 1}
           />
@@ -51,7 +64,14 @@ export function TestCasesSection({ form, testCasesArray }: any) {
   );
 }
 
-function TestCaseCard({ index, register, errors, onRemove, canRemove }: any) {
+interface TestCaseCardProps {
+  index: number;
+  register: UseFormReturn<ProblemFormData>["register"];
+  onRemove: () => void;
+  canRemove: boolean;
+}
+
+function TestCaseCard({ index, register, onRemove, canRemove }: TestCaseCardProps) {
   return (
     <Card className="bg-background">
       <CardHeader className="pb-4">
@@ -63,7 +83,7 @@ function TestCaseCard({ index, register, errors, onRemove, canRemove }: any) {
             size="sm"
             onClick={onRemove}
             disabled={!canRemove}
-            className="text-red-500 gap-2"
+            className="text-red-500 gap-2 cursor-pointer"
           >
             <Trash2 className="w-4 h-4" /> Remove
           </Button>
@@ -78,11 +98,6 @@ function TestCaseCard({ index, register, errors, onRemove, canRemove }: any) {
               placeholder="Enter test case input"
               className="mt-2 min-h-24 resize-y font-mono"
             />
-            {errors.testCases?.[index]?.input && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.testCases[index].input.message}
-              </p>
-            )}
           </div>
           <div>
             <Label className="font-medium">Expected Output</Label>
@@ -91,15 +106,9 @@ function TestCaseCard({ index, register, errors, onRemove, canRemove }: any) {
               placeholder="Enter expected output"
               className="mt-2 min-h-24 resize-y font-mono"
             />
-            {errors.testCases?.[index]?.output && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.testCases[index].output.message}
-              </p>
-            )}
           </div>
         </div>
       </CardContent>
     </Card>
   );
 }
-

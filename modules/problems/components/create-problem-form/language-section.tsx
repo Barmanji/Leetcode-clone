@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller } from "react-hook-form";
+import { Controller, type FieldError, type FormState } from "react-hook-form";
 import { Code2, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,8 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { LANGUAGES } from "../../schema";
 import { CodeEditor } from "./code-editor";
+import type { UseFormReturn } from "react-hook-form";
+import type { z } from "zod";
+import type { problemSchema } from "@/modules/problems/schema";
 
-export function LanguageSections({ form }: any) {
+type ProblemFormData = z.infer<typeof problemSchema>;
+
+interface LanguageSectionProps {
+  form: UseFormReturn<ProblemFormData>;
+}
+
+export function LanguageSections({ form }: LanguageSectionProps) {
   return (
     <>
       {LANGUAGES.map((language) => (
@@ -19,12 +28,19 @@ export function LanguageSections({ form }: any) {
   );
 }
 
-function LanguageCard({ language, form }: any) {
+interface LanguageCardProps {
+  language: string;
+  form: UseFormReturn<ProblemFormData>;
+}
+
+function LanguageCard({ language, form }: LanguageCardProps) {
   const {
     control,
     register,
     formState: { errors },
   } = form;
+
+  const langKey = language as "JAVASCRIPT" | "PYTHON" | "JAVA" | "CPP" | "RUST" | "TYPESCRIPT";
 
   return (
     <Card className="bg-slate-50 dark:bg-slate-950/20">
@@ -38,12 +54,12 @@ function LanguageCard({ language, form }: any) {
         <StarterCodeEditor
           language={language}
           control={control}
-          error={errors.codeSnippets?.[language]}
+          error={errors.codeSnippets?.[langKey]}
         />
         <ReferenceSolutionEditor
           language={language}
           control={control}
-          error={errors.referenceSolutions?.[language]}
+          error={errors.referenceSolutions?.[langKey]}
         />
         <ExampleFields
           language={language}
@@ -55,7 +71,13 @@ function LanguageCard({ language, form }: any) {
   );
 }
 
-function StarterCodeEditor({ language, control, error }: any) {
+interface EditorProps {
+  language: string;
+  control: UseFormReturn<ProblemFormData>["control"];
+  error?: FieldError;
+}
+
+function StarterCodeEditor({ language, control, error }: EditorProps) {
   return (
     <Card>
       <CardHeader>
@@ -63,7 +85,7 @@ function StarterCodeEditor({ language, control, error }: any) {
       </CardHeader>
       <CardContent>
         <Controller
-          name={`codeSnippets.${language}`}
+          name={`codeSnippets.${language as "JAVASCRIPT" | "PYTHON" | "JAVA" | "CPP" | "RUST" | "TYPESCRIPT"}`}
           control={control}
           render={({ field }) => (
             <CodeEditor
@@ -81,7 +103,7 @@ function StarterCodeEditor({ language, control, error }: any) {
   );
 }
 
-function ReferenceSolutionEditor({ language, control, error }: any) {
+function ReferenceSolutionEditor({ language, control, error }: EditorProps) {
   return (
     <Card>
       <CardHeader>
@@ -92,7 +114,7 @@ function ReferenceSolutionEditor({ language, control, error }: any) {
       </CardHeader>
       <CardContent>
         <Controller
-          name={`referenceSolutions.${language}`}
+          name={`referenceSolutions.${language as "JAVASCRIPT" | "PYTHON" | "JAVA" | "CPP" | "RUST" | "TYPESCRIPT"}`}
           control={control}
           render={({ field }) => (
             <CodeEditor
@@ -110,7 +132,16 @@ function ReferenceSolutionEditor({ language, control, error }: any) {
   );
 }
 
-function ExampleFields({ language, register, errors }: any) {
+interface ExampleFieldsProps {
+  language: string;
+  register: UseFormReturn<ProblemFormData>["register"];
+  errors: FormState<ProblemFormData>["errors"];
+}
+
+function ExampleFields({ language, register, errors }: ExampleFieldsProps) {
+  const langKey = language as "JAVASCRIPT" | "PYTHON" | "JAVA" | "CPP" | "RUST" | "TYPESCRIPT";
+  const langErrors = errors?.examples?.[langKey] as { input?: { message?: string }; output?: { message?: string } } | undefined;
+
   return (
     <Card>
       <CardHeader>
@@ -121,33 +152,33 @@ function ExampleFields({ language, register, errors }: any) {
           <div>
             <Label className="font-medium">Input</Label>
             <Textarea
-              {...register(`examples.${language}.input`)}
+              {...register(`examples.${langKey}.input`)}
               placeholder="Example input"
               className="mt-2 min-h-20 resize-y font-mono"
             />
-            {errors.examples?.[language]?.input && (
+            {langErrors?.input && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.examples[language].input.message}
+                {langErrors.input.message}
               </p>
             )}
           </div>
           <div>
             <Label className="font-medium">Output</Label>
             <Textarea
-              {...register(`examples.${language}.output`)}
+              {...register(`examples.${langKey}.output`)}
               placeholder="Example output"
               className="mt-2 min-h-20 resize-y font-mono"
             />
-            {errors.examples?.[language]?.output && (
+            {langErrors?.output && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.examples[language].output.message}
+                {langErrors.output.message}
               </p>
             )}
           </div>
           <div className="md:col-span-2">
             <Label className="font-medium">Explanation</Label>
             <Textarea
-              {...register(`examples.${language}.explanation`)}
+              {...register(`examples.${langKey}.explanation`)}
               placeholder="Explain the example"
               className="mt-2 min-h-24 resize-y"
             />

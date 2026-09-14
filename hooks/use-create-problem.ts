@@ -1,6 +1,5 @@
 "use client";
 
-// create problem hook - ADMIN
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -17,7 +16,6 @@ export function useCreateProblem() {
   const [isLoading, setIsLoading] = useState(false);
   const [sampleType, setSampleType] = useState("DP");
 
-  // useForm props from react-hook-form with zod resolver and default values
   const form = useForm<ProblemFormData>({
     resolver: zodResolver(problemSchema),
     defaultValues: defaultFormValues as ProblemFormData,
@@ -25,14 +23,14 @@ export function useCreateProblem() {
 
   const testCasesArray = useFieldArray({
     control: form.control,
-    name: "testCases" as const,
+    name: "testCases",
   });
 
-  // READ:
+  // tags is a string[] field - useFieldArray needs special handling
   const tagsArray = useFieldArray({
     control: form.control,
-    name: "tags" as any,
-  }) as any;
+    name: "tags" as "testCases",
+  });
 
   const onSubmit = async (values: ProblemFormData) => {
     try {
@@ -45,7 +43,6 @@ export function useCreateProblem() {
 
       const data = await response.json();
 
-      console.log(data);
       if (data.success) {
         toast.success("Problem created successfully");
         router.push("/problems");
@@ -61,16 +58,21 @@ export function useCreateProblem() {
   const loadSampleData = () => {
     const sampleData =
       SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS];
-    tagsArray.replace(sampleData.tags);
+    // Replace tags by resetting form with sample data
+    form.reset(sampleData as unknown as ProblemFormData);
+    // Re-apply field arrays
     testCasesArray.replace(sampleData.testCases);
-
-    form.reset(sampleData as any);
+    tagsArray.replace(sampleData.tags as unknown as { input: string; output: string }[]);
   };
 
   return {
     form,
     testCasesArray,
-    tagsArray,
+    tagsArray: {
+      fields: tagsArray.fields,
+      append: (value: string) => (tagsArray.append as (v: unknown) => void)(value),
+      remove: tagsArray.remove,
+    },
     isLoading,
     sampleType,
     setSampleType,

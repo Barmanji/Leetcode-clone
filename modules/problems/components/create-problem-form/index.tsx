@@ -25,22 +25,20 @@ export function CreateProblemForm() {
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
       <Card className="shadow-xl">
-        {/* FormHeader */}
         <FormHeader
           sampleType={sampleType}
           setSampleType={setSampleType}
           onLoadSample={loadSampleData}
         />
 
-        {/* from shadcn BS */}
         <CardContent className="p-6">
           <form onSubmit={onSubmit} className="space-y-8">
-            <BasicInfoSection form={form}/>  {/* for title, description, difficulty */}
-            <TagsSection form={form} tagsArray={tagsArray}/> {/* for addding tags  and delete */}
-            <TestCasesSection form={form} testCasesArray={testCasesArray}/> {/* for testcase, input/ouptu*/}
-            <LanguageSections form={form}/> {/* for language specific code, solution, explanation */}
-              <AdditionalInfoSection form={form} /> {/* for constraints, hints, editorial */}
-              <SubmitButton isLoading={isLoading} />
+            <BasicInfoSection form={form} />
+            <TagsSection form={form} tagsArray={tagsArray} />
+            <TestCasesSection form={form} testCasesArray={testCasesArray} />
+            <LanguageSections form={form} />
+            <AdditionalInfoSection form={form} />
+            <SubmitButton isLoading={isLoading} />
           </form>
         </CardContent>
       </Card>
@@ -48,11 +46,10 @@ export function CreateProblemForm() {
   );
 }
 
-
-function SubmitButton({isLoading}:any){
-return (
-     <div className="flex justify-end mt-6">
-      <Button type="submit" size="lg" disabled={isLoading} className="gap-2">
+function SubmitButton({ isLoading }: { isLoading: boolean }) {
+  return (
+    <div className="flex justify-end mt-6">
+      <Button type="submit" size="lg" disabled={isLoading} className="gap-2 cursor-pointer">
         {isLoading ? (
           <>
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -66,6 +63,5 @@ return (
         )}
       </Button>
     </div>
-)
+  );
 }
-

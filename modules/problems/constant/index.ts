@@ -15,8 +15,9 @@ export const DIFFICULTY_COLORS = {
 };
 
 // helper to get diffcolor
-export const getDifficultyColor = (difficulty: keyof typeof DIFFICULTY_COLORS) => {
-  return DIFFICULTY_COLORS[difficulty] || "";
+export const getDifficultyColor = (difficulty: string | undefined) => {
+  if (!difficulty) return "";
+  return DIFFICULTY_COLORS[difficulty as keyof typeof DIFFICULTY_COLORS] || "";
 };
 
 export const LANGUAGE_OPTIONS = [
@@ -36,11 +37,11 @@ export const getEditorLanguage = (language:string) => {
 export const EDITOR_OPTIONS = {
   minimap: { enabled: false },
   fontSize: 16,
-  lineNumbers: 'on',
+  lineNumbers: "on" as const,
   roundedSelection: false,
   scrollBeyondLastLine: false,
   automaticLayout: true,
   tabSize: 2,
-  wordWrap: 'on',
+  wordWrap: "on" as const,
 };
 

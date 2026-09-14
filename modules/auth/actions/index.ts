@@ -71,7 +71,15 @@ export const getCurrentUserData = async()=>{
      include:{
       submissions:true,
       solvedProblems:true,
-      playlists:true
+      playlists:{
+        include:{
+          problems:{
+            include:{
+              problem:true
+            }
+          }
+        }
+      }
      }
 
     });
