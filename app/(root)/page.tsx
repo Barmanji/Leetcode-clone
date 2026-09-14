@@ -11,6 +11,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { RiGithubFill, RiLinkedinBoxFill, RiMailLine } from "react-icons/ri";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -82,6 +83,24 @@ export default async function Home() {
         "Master complex algorithms and compete in programming contests.",
       count: "300+ Problems",
       color: "amber",
+    },
+  ];
+
+  const socialLinks = [
+    {
+      name: "GitHub",
+      url: "https://github.com/barmanji",
+      icon: <RiGithubFill size={25} />,
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/in/ajay-barman-0b37011a7/",
+      icon: <RiLinkedinBoxFill size={25} />,
+    },
+    {
+      name: "Email",
+      url: "mailto:barmanjiaj@gmail.com",
+      icon: <RiMailLine size={25} />,
     },
   ];
 
@@ -272,7 +291,7 @@ export default async function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-linear-to-r from-amber-600 to-amber-300  dark:from-amber-600 dark:to-indigo-600 rounded-md">
+      <section className="py-15 bg-linear-to-r from-amber-600 to-amber-300 dark:from-amber-600 dark:to-indigo-600 rounded-md">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to start your coding journey?
@@ -287,6 +306,38 @@ export default async function Home() {
           >
             <Link href="/problems">Get Started for free</Link>
           </Button>
+
+          {/* Social Links */}
+          <div className="mt-12 pt-8 border-t border-white/20">
+            <p className="text-white/80 mb-4">
+              <a
+                href="https://barmanji.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-white underline decoration-white/60 decoration-2 underline-offset-4 hover:decoration-white transition-colors"
+              >
+                Connect
+              </a>{" "}
+              with me
+            </p>
+            <div className="flex justify-center items-center gap-6">
+              {socialLinks.map((link) => {
+                const isMail = link.url.startsWith("mailto:");
+                return (
+                  <a
+                    key={link.name}
+                    href={link.url}
+                    target={isMail ? undefined : "_blank"}
+                    rel={isMail ? undefined : "noopener noreferrer"}
+                    aria-label={link.name}
+                    className="text-white/80 hover:text-white transition-colors hover:-translate-y-0.5"
+                  >
+                    {link.icon}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
     </div>
