@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import type { UsePlaylistActionsReturn } from "@/modules/types/hooks";
 
-export function usePlaylistActions() {
+export function usePlaylistActions(): UsePlaylistActionsReturn {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
     useState(false);
-  const [selectedProblemId, setSelectedProblemId] = useState(null);
+  const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
 
-  const handleCreatePlaylist = async (data: any) => {
+  const handleCreatePlaylist = async (data: { name: string; description?: string }) => {
     try {
       const response = await fetch("/api/playlist/get-and-create-playlist/", {
         method: "POST",
@@ -58,7 +59,7 @@ export function usePlaylistActions() {
     }
   };
 
-  const openAddToPlaylist = (problemId: any) => {
+  const openAddToPlaylist = (problemId: string) => {
     setSelectedProblemId(problemId);
     setIsAddToPlaylistModalOpen(true);
   };
@@ -69,7 +70,6 @@ export function usePlaylistActions() {
     closeCreateModal: () => setIsCreateModalOpen(false),
     handleCreatePlaylist,
 
-    // Add to playlist modal
     isAddToPlaylistModalOpen,
     selectedProblemId,
     openAddToPlaylist,

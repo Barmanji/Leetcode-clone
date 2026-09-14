@@ -2,22 +2,15 @@ import { User, Mail, Calendar, Shield } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-
-interface UserData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: string;
-  imageUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { UserData } from '@/modules/types/problem';
 
 interface UserInfoCardProps {
-  userData: UserData;
+  userData: UserData | null;
 }
 
 const UserInfoCard = ({ userData }: UserInfoCardProps) => {
+  if (!userData) return null;
+
   const formatDate = (dateString: Date) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -33,11 +26,11 @@ const UserInfoCard = ({ userData }: UserInfoCardProps) => {
         <div className="relative">
           <Avatar className="w-24 h-24 border-4 border-primary/20">
             <AvatarImage
-              src={userData.imageUrl}
-              alt={`${userData.firstName} ${userData.lastName}`}
+              src={userData.imageUrl || undefined}
+              alt={`${userData.firstName || ""} ${userData.lastName || ""}`}
             />
             <AvatarFallback className="text-2xl font-bold">
-              {userData.firstName[0]}{userData.lastName ? userData.lastName[0]: "" }
+              {userData.firstName?.[0] || ""}{userData.lastName?.[0] || ""}
             </AvatarFallback>
           </Avatar>
           <div className="absolute -bottom-2 -right-2 bg-primary rounded-full p-2">

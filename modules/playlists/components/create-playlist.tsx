@@ -16,15 +16,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import * as z from "zod";
+import type { CreatePlaylistModalProps } from "@/modules/types/components";
 
 const playlistSchema = z.object({
   name: z.string().min(1, "Name is required").max(50, "Name is too long"),
   description: z.string().max(500, "Description is too long").optional(),
 });
 
-const CreatePlaylistModal = ({ isOpen, onClose, onSubmit }: any) => {
-
-  console.log(isOpen)
+const CreatePlaylistModal = ({ isOpen, onClose, onSubmit }: CreatePlaylistModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -93,10 +92,11 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit }: any) => {
               variant="outline"
               onClick={onClose}
               disabled={isLoading}
+              className="cursor-pointer"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="cursor-pointer">
               {isLoading ? "Creating..." : "Create Playlist"}
             </Button>
           </div>
@@ -107,4 +107,3 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit }: any) => {
 };
 
 export default CreatePlaylistModal;
-
