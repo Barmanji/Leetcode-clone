@@ -11,5 +11,20 @@ services:
     volumes:
       - leetcode_pg_data:/var/lib/postgresql/data
 
+  leetcode-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: leetcode_app
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@leetcode-postgres:5432/leetcode-clone
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      JUDGE0_URL: ${JUDGE0_URL:-http://judge0:2358}
+    depends_on:
+      - leetcode-postgres
+
 volumes:
   leetcode_pg_data:
