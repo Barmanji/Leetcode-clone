@@ -3,9 +3,13 @@ import { getJudge0languageId } from "@/lib/judge0";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { submitCode, runCode } from "../actions";
+import type { Problem } from "@/modules/types/problem";
+import type { ExecutionResponse } from "@/modules/types/actions";
+
+export type ResultTab = "testcases" | "result";
 
 export function useEditor(
-  problem: any,
+  problem: Problem | null,
   initialLanguage = "JAVASCRIPT",
   onSubmissionSuccess?: () => void,
 ) {
@@ -13,22 +17,27 @@ export function useEditor(
   const [code, setCode] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [executionResponse, setExecutionResponse] = useState<any>(null);
+  const [executionResponse, setExecutionResponse] =
+    useState<ExecutionResponse>(null);
+  const [activeResultTab, setActiveResultTab] =
+    useState<ResultTab>("testcases");
 
   useEffect(() => {
     if (problem?.codeSnippets?.[selectedLanguage]) {
-      setCode(problem?.codeSnippets?.[selectedLanguage]);
+      setCode(problem.codeSnippets[selectedLanguage]);
     }
   }, [selectedLanguage, problem]);
 
   const handleRun = async () => {
     try {
       setIsRunning(true);
+      setActiveResultTab("result");
 
-      const language_id: any = getJudge0languageId(selectedLanguage);
-      const stdin = problem.testCases.map((tc: any) => tc.input);
+      const languageId = getJudge0languageId(selectedLanguage);
+      const stdin = problem!.testCases.map((tc) => tc.input);
+      const expected_outputs = problem!.testCases.map((tc) => tc.output);
 
-      const res = await runCode(code, language_id, stdin);
+      const res = await runCode(code, languageId, stdin, expected_outputs);
       setExecutionResponse(res);
       if (res.success) {
         toast.success("Code executed successfully");
@@ -46,13 +55,15 @@ export function useEditor(
 
     try {
       setIsSubmitting(true);
-      const language_id: any = getJudge0languageId(selectedLanguage);
-      const stdin = problem.testCases.map((tc: any) => tc.input);
-      const expected_outputs = problem.testCases.map((tc: any) => tc.output);
+      setActiveResultTab("result");
+
+      const languageId = getJudge0languageId(selectedLanguage);
+      const stdin = problem.testCases.map((tc) => tc.input);
+      const expected_outputs = problem.testCases.map((tc) => tc.output);
 
       const res = await submitCode(
         code,
-        language_id,
+        languageId,
         stdin,
         expected_outputs,
         problem.id,
@@ -60,7 +71,7 @@ export function useEditor(
       setExecutionResponse(res);
 
       if (res.success) {
-        toast.success("Code executed successfully");
+        toast.success("Code submitted successfully");
         onSubmissionSuccess?.();
       }
     } catch (error) {
@@ -79,6 +90,8 @@ export function useEditor(
     isRunning,
     isSubmitting,
     executionResponse,
+    activeResultTab,
+    setActiveResultTab,
     handleRun,
     handleSubmit,
   };

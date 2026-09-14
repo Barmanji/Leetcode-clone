@@ -11,11 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DIFFICULTIES } from "../constant";
+import type { ProblemsFiltersProps } from "@/modules/types/components";
 
-
-/**
- * Filters section with search, difficulty, and tag dropdowns
- */
 export function ProblemsFilters({
   search,
   onSearchChange,
@@ -24,7 +21,7 @@ export function ProblemsFilters({
   selectedTag,
   onTagChange,
   allTags = [],
-}:any) {
+}: ProblemsFiltersProps) {
   return (
     <Card>
       <CardHeader>
@@ -35,12 +32,9 @@ export function ProblemsFilters({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search Input */}
           <div className="flex-1">
             <SearchInput value={search} onChange={onSearchChange} />
           </div>
-
-          {/* Difficulty & Tag Selects */}
           <div className="flex flex-col sm:flex-row gap-4">
             <DifficultySelect
               value={difficulty}
@@ -58,10 +52,7 @@ export function ProblemsFilters({
   );
 }
 
-/**
- * Search input with icon
- */
-function SearchInput({ value, onChange }: any) {
+function SearchInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="relative">
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -75,19 +66,16 @@ function SearchInput({ value, onChange }: any) {
   );
 }
 
-/**
- * Difficulty filter dropdown
- */
-function DifficultySelect({ value, onChange }: any) {
+function DifficultySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] cursor-pointer">
         <SelectValue placeholder="Select difficulty" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="ALL">All Difficulties</SelectItem>
+        <SelectItem value="ALL" className="cursor-pointer">All Difficulties</SelectItem>
         {DIFFICULTIES.map((diff) => (
-          <SelectItem key={diff} value={diff}>
+          <SelectItem key={diff} value={diff} className="cursor-pointer">
             {diff.charAt(0).toUpperCase() + diff.slice(1).toLowerCase()}
           </SelectItem>
         ))}
@@ -96,19 +84,16 @@ function DifficultySelect({ value, onChange }: any) {
   );
 }
 
-/**
- * Tag filter dropdown
- */
-function TagSelect({ value, onChange, tags }: any) {
+function TagSelect({ value, onChange, tags }: { value: string; onChange: (v: string) => void; tags: string[] }) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] cursor-pointer">
         <SelectValue placeholder="Select tag" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="ALL">All Tags</SelectItem>
-        {tags.map((tag: any) => (
-          <SelectItem key={tag} value={tag}>
+        <SelectItem value="ALL" className="cursor-pointer">All Tags</SelectItem>
+        {tags.map((tag) => (
+          <SelectItem key={tag} value={tag} className="cursor-pointer">
             {tag}
           </SelectItem>
         ))}
@@ -116,4 +101,3 @@ function TagSelect({ value, onChange, tags }: any) {
     </Select>
   );
 }
-

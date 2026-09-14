@@ -15,15 +15,7 @@ import {
   Code,
   Calendar,
 } from "lucide-react";
-
-interface Submission {
-  id: string;
-  status: string;
-  createdAt: string | Date;
-  language: string;
-  memory: string;
-  time: string;
-}
+import type { Submission } from "@/modules/types/problem";
 
 interface SubmissionHistoryProps {
   submissions?: Submission[];
@@ -43,49 +35,45 @@ export const SubmissionHistory = ({
     );
   }
 
-const formatMemory = (memory: string) => {
-  if (!memory) return "N/A";
-  try {
-    const memoryArray: string[] = JSON.parse(memory);
-    if (!memoryArray.length) return "0.00 KB";
+  const formatMemory = (memory: string) => {
+    if (!memory) return "N/A";
+    try {
+      const memoryArray: string[] = JSON.parse(memory);
+      if (!memoryArray.length) return "0.00 KB";
 
-    // 1. Convert all array items into KB numbers
-    const memoryInKB = memoryArray.map((item) => {
-      const numericValue = parseFloat(item);
-      if (isNaN(numericValue)) return 0;
+      const memoryInKB = memoryArray.map((item) => {
+        const numericValue = parseFloat(item);
+        if (isNaN(numericValue)) return 0;
 
-      const upperItem = item.toUpperCase();
-      if (upperItem.includes("GB")) return numericValue * 1024 * 1024;
-      if (upperItem.includes("MB")) return numericValue * 1024;
-      return numericValue; // Default to KB
-    });
+        const upperItem = item.toUpperCase();
+        if (upperItem.includes("GB")) return numericValue * 1024 * 1024;
+        if (upperItem.includes("MB")) return numericValue * 1024;
+        return numericValue;
+      });
 
-    // 2. Calculate the average in KB
-    const totalMemoryKB = memoryInKB.reduce((a, b) => a + b, 0);
-    let avgMemory = totalMemoryKB / memoryArray.length;
+      const totalMemoryKB = memoryInKB.reduce((a, b) => a + b, 0);
+      let avgMemory = totalMemoryKB / memoryArray.length;
 
-    // 3. Dynamically scale the output unit for readability
-    let unit = "KB";
+      let unit = "KB";
 
-    if (avgMemory >= 1024 * 1024) {
-      avgMemory = avgMemory / (1024 * 1024);
-      unit = "GB";
-    } else if (avgMemory >= 1024) {
-      avgMemory = avgMemory / 1024;
-      unit = "MB";
+      if (avgMemory >= 1024 * 1024) {
+        avgMemory = avgMemory / (1024 * 1024);
+        unit = "GB";
+      } else if (avgMemory >= 1024) {
+        avgMemory = avgMemory / 1024;
+        unit = "MB";
+      }
+
+      return `${avgMemory.toFixed(2)} ${unit}`;
+    } catch {
+      return "N/A";
     }
-
-    console.log("MEM0", `${avgMemory.toFixed(2)} ${unit}`);
-    return `${avgMemory.toFixed(2)} ${unit}`;
-  } catch {
-    return "N/A";
-  }
-};
+  };
 
   const formatTime = (time: string) => {
     if (!time) return "N/A";
     try {
-      const timeArray = JSON.parse(time);
+      const timeArray: string[] = JSON.parse(time);
       const avgTime =
         timeArray
           .map((t: string) => parseFloat(t.replace(" s", "")))
@@ -159,7 +147,7 @@ const formatMemory = (memory: string) => {
                           Memory
                         </p>
                         <p className="text-sm font-medium">
-                          {formatMemory(submission.memory)}
+                          {formatMemory(submission.memory || "")}
                         </p>
                       </div>
                     </div>
@@ -170,7 +158,7 @@ const formatMemory = (memory: string) => {
                           Time
                         </p>
                         <p className="text-sm font-medium">
-                          {formatTime(submission.time)}
+                          {formatTime(submission.time || "")}
                         </p>
                       </div>
                     </div>

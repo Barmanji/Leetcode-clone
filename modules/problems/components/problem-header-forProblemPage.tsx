@@ -5,14 +5,19 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getDifficultyColor } from "../constant";
+import type { Problem } from "@/modules/types/problem";
 
-export function ProblemHeaderForProblemPage({ problem }: any) {
+interface ProblemHeaderProps {
+  problem: Problem | null;
+}
+
+export function ProblemHeaderForProblemPage({ problem }: ProblemHeaderProps) {
   return (
-    <div className="mb-6 flex items-start justify-between">
+    <div className="mb-4 flex items-start justify-between">
       <div>
         <div className="flex items-center gap-4 mb-4">
           <Link href="/">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="cursor-pointer">
               <ArrowLeft className="size-4" />
             </Button>
           </Link>
@@ -27,7 +32,7 @@ export function ProblemHeaderForProblemPage({ problem }: any) {
           </Badge>
         </div>
         <div className="flex flex-wrap gap-2">
-          {problem?.tags.map((tag:string) => (
+          {problem?.tags.map((tag: string) => (
             <Badge key={tag} variant="outline" className="text-sm">
               {tag}
             </Badge>
@@ -38,4 +43,3 @@ export function ProblemHeaderForProblemPage({ problem }: any) {
     </div>
   );
 }
-

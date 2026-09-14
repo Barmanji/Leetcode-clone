@@ -1,4 +1,8 @@
-export function ConstraintsSection({ constraints }:any) {
+interface ConstraintsSectionProps {
+  constraints: string;
+}
+
+export function ConstraintsSection({ constraints }: ConstraintsSectionProps) {
   if (!constraints) return null;
 
   return (
@@ -10,4 +14,3 @@ export function ConstraintsSection({ constraints }:any) {
     </div>
   );
 }
-

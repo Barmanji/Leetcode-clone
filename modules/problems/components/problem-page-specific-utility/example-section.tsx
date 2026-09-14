@@ -1,10 +1,16 @@
 'use client';
-export function ExampleSection({ example , index }:any) {
+
+interface ExampleSectionProps {
+  example: { input: string; output: string; explanation?: string };
+  index: number;
+}
+
+export function ExampleSection({ example, index }: ExampleSectionProps) {
   if (!example) return null;
 
   return (
     <div>
-      <h3 className="font-semibold text-lg mb-3">Example: {index+1}</h3>
+      <h3 className="font-semibold text-lg mb-3">Example: {index + 1}</h3>
       <div className="bg-muted p-4 rounded-lg space-y-2">
         <div>
           <span className="font-medium text-amber-400">Input: </span>
@@ -28,4 +34,3 @@ export function ExampleSection({ example , index }:any) {
     </div>
   );
 }
-

@@ -1,8 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, CpuIcon, Code, CheckCircle2, XCircle } from "lucide-react";
+import type { Submission } from "@/modules/types/problem";
 
-export const SubmissionDetails = ({ submission }:any) => {
+interface SubmissionDetailsProps {
+  submission: Submission;
+}
+
+export const SubmissionDetails = ({ submission }: SubmissionDetailsProps) => {
   const isSuccess = submission.status === "Accepted";
   const memoryValues: number[] = submission.memory
     ? (JSON.parse(submission.memory) as string[]).map(parseFloat)
@@ -69,4 +74,3 @@ export const SubmissionDetails = ({ submission }:any) => {
     </Card>
   );
 };
-

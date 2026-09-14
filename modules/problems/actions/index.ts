@@ -7,8 +7,17 @@ import {
   submitBatch,
 } from "@/lib/judge0";
 import { getCurrentUserData } from "@/modules/auth/actions";
+import type {
+  ActionResult,
+  DetailedRunResult,
+  DetailedSubmitResult,
+  Judge0Result,
+  RunCodeResponse,
+  SubmitCodeResponse,
+} from "@/modules/types/actions";
+import type { Problem, Submission } from "@/modules/types/problem";
 
-export const getAllProblems = async () => {
+export const getAllProblems = async (): Promise<ActionResult<Problem[]>> => {
   try {
     const problems = await prisma.problem.findMany({
       include: {
@@ -21,10 +30,10 @@ export const getAllProblems = async () => {
 
     return {
       success: true,
-      data: problems,
+      data: problems as unknown as Problem[],
     };
   } catch (error) {
-    console.error("❌ Error fetching problems:", error);
+    console.error("Error fetching problems:", error);
     return {
       success: false,
       error: "Failed to fetch problems",
@@ -32,7 +41,7 @@ export const getAllProblems = async () => {
   }
 };
 
-export const getProblemById = async (id: string) => {
+export const getProblemById = async (id: string): Promise<ActionResult<Problem>> => {
   try {
     const problem = await prisma.problem.findUnique({
       where: {
@@ -42,10 +51,10 @@ export const getProblemById = async (id: string) => {
 
     return {
       success: true,
-      data: problem,
+      data: problem as unknown as Problem,
     };
   } catch (error) {
-    console.error("❌ Error fetching problem:", error);
+    console.error("Error fetching problem:", error);
     return {
       success: false,
       error: "Failed to fetch problem",
@@ -66,14 +75,14 @@ const executeTestCases = async (
     source_code,
     language_id,
     stdin: input,
-    base64_encoded: false,
-    wait: false,
+    base64_encoded: false as const,
+    wait: false as const,
   }));
 
   const submitResponse = await submitBatch(submissions);
 
   const tokens = submitResponse.map(
-    (res: { token: string }) => res.token,
+    (res) => res.token,
   );
 
   const results = await pollBatchResults(tokens);
@@ -89,7 +98,8 @@ export const runCode = async (
   source_code: string,
   language_id: number,
   stdin: string[],
-) => {
+  expected_outputs: string[],
+): Promise<RunCodeResponse | { success: false; error: string }> => {
   try {
     const user = await getCurrentUserData();
 
@@ -100,7 +110,12 @@ export const runCode = async (
       };
     }
 
-    if (!Array.isArray(stdin) || stdin.length === 0) {
+    if (
+      !Array.isArray(stdin) ||
+      stdin.length === 0 ||
+      !Array.isArray(expected_outputs) ||
+      expected_outputs.length !== stdin.length
+    ) {
       return {
         success: false,
         error: "Invalid Test Cases",
@@ -113,26 +128,36 @@ export const runCode = async (
       stdin,
     );
 
-    const detailedResults = results.map((result, i) => ({
-      testCase: i + 1,
-      stdout: result.stdout?.trim() || null,
-      stderr: result.stderr || null,
-      compileOutput: result.compile_output || null,
-      status: result.status.description,
-      memory: result.memory
-        ? `${result.memory} KB`
-        : undefined,
-      time: result.time
-        ? `${result.time} s`
-        : undefined,
-    }));
+    const detailedResults: DetailedRunResult[] = results.map(
+      (result: Judge0Result, i: number) => {
+        const stdout = result.stdout?.trim() || null;
+        const expected = expected_outputs[i]?.trim() || "";
+        const passed = stdout === expected;
+
+        return {
+          testCase: i + 1,
+          passed,
+          stdout,
+          expected,
+          stderr: result.stderr || null,
+          compileOutput: result.compile_output || null,
+          status: result.status.description,
+          memory: result.memory
+            ? `${result.memory} KB`
+            : undefined,
+          time: result.time
+            ? `${result.time} s`
+            : undefined,
+        };
+      },
+    );
 
     return {
       success: true,
       results: detailedResults,
     };
   } catch (error) {
-    console.error("❌ Error running code:", error);
+    console.error("Error running code:", error);
 
     return {
       success: false,
@@ -150,7 +175,7 @@ export const submitCode = async (
   stdin: string[],
   expected_outputs: string[],
   problemId: string,
-) => {
+): Promise<SubmitCodeResponse | { success: false; error: string }> => {
   try {
     const user = await getCurrentUserData();
 
@@ -181,22 +206,13 @@ export const submitCode = async (
 
     let allPassed = true;
 
-    const detailedResults = results.map(
+    const detailedResults: DetailedSubmitResult[] = results.map(
       (
-        result: {
-          stdout?: string;
-          stderr?: string;
-          compile_output?: string;
-          status: {
-            description: string;
-          };
-          memory?: number;
-          time?: number;
-        },
+        result: Judge0Result,
         i: number,
       ) => {
         const stdout = result.stdout?.trim() || null;
-        const expected = expected_outputs[i]?.trim();
+        const expected = expected_outputs[i]?.trim() || "";
 
         const passed = stdout === expected;
 
@@ -210,7 +226,7 @@ export const submitCode = async (
           stdout,
           expected,
           stderr: result.stderr || null,
-          compile_output: result.compile_output || null,
+          compileOutput: result.compile_output || null,
           status: result.status.description,
           memory: result.memory
             ? `${result.memory} KB`
@@ -248,11 +264,11 @@ export const submitCode = async (
           : null,
 
         compileOutput: detailedResults.some(
-          (result) => result.compile_output,
+          (result) => result.compileOutput,
         )
           ? JSON.stringify(
               detailedResults.map(
-                (result) => result.compile_output,
+                (result) => result.compileOutput,
               ),
             )
           : null,
@@ -311,7 +327,7 @@ export const submitCode = async (
         stdout: result.stdout,
         expected: result.expected,
         stderr: result.stderr,
-        compileOutput: result.compile_output,
+        compileOutput: result.compileOutput,
         status: result.status,
         memory: result.memory,
         time: result.time,
@@ -336,10 +352,10 @@ export const submitCode = async (
 
     return {
       success: true,
-      submission: submissionWithTestCases,
+      submission: submissionWithTestCases as unknown as SubmitCodeResponse["submission"],
     };
   } catch (error) {
-    console.error("❌ Error submitting code:", error);
+    console.error("Error submitting code:", error);
 
     return {
       success: false,
@@ -354,7 +370,7 @@ export const submitCode = async (
 
 export const getAllSubmissionByCurrentUserForProblem = async (
   problemId: string,
-) => {
+): Promise<ActionResult<Submission[]>> => {
   try {
     const user = await getCurrentUserData();
 
@@ -373,11 +389,11 @@ export const getAllSubmissionByCurrentUserForProblem = async (
 
     return {
       success: true,
-      data: submissions,
+      data: submissions as unknown as Submission[],
     };
   } catch (error) {
     console.error(
-      "❌ Error fetching submissions:",
+      "Error fetching submissions:",
       error,
     );
 
