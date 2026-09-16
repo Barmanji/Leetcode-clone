@@ -78,8 +78,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>
-            <Toaster/>
+          <ClerkProvider telemetry={false}>
+            <Toaster />
             {children}
           </ClerkProvider>
         </ThemeProvider>
