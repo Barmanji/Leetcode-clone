@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { UserRole } from "@/lib/generated/prisma/enums";
+import { unstable_rethrow } from "next/navigation";
 
 export const onBoardUser = async () => {
   try {
@@ -33,6 +34,7 @@ export const onBoardUser = async () => {
       },
     });
   } catch (error) {
+    unstable_rethrow(error);
     console.log("Error onboarding user:", error);
   }
 };
@@ -53,39 +55,40 @@ export const currentUserRole = async (): Promise<UserRole | null> => {
 
     return userRole?.role ?? null;
   } catch (error) {
+    unstable_rethrow(error);
     console.log("Error getting current user role:", error);
     return null;
   }
 };
 
-export const getCurrentUserData = async()=>{
+export const getCurrentUserData = async () => {
   try {
     const user = await currentUser();
-    if(!user){
+    if (!user) {
       return { success: false, error: "No authenticated user found" };
     }
     const data = await prisma.user.findUnique({
-     where:{
-      clerkId:user.id
-     },
-     include:{
-      submissions:true,
-      solvedProblems:true,
-      playlists:{
-        include:{
-          problems:{
-            include:{
-              problem:true
-            }
-          }
-        }
-      }
-     }
-
+      where: {
+        clerkId: user.id,
+      },
+      include: {
+        submissions: true,
+        solvedProblems: true,
+        playlists: {
+          include: {
+            problems: {
+              include: {
+                problem: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return data;
   } catch (error) {
+    unstable_rethrow(error);
     console.log("Error fetching current user data:", error);
   }
-}
+};
