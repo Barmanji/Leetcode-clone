@@ -29,17 +29,32 @@ const ProblemsTable = ({ problems = [], user }: ProblemsTableProps) => {
   const pagination = usePagination(filters.filteredProblems);
   const playlist = usePlaylistActions();
 
+  const handleSearchChange = (value: string) => {
+    filters.setSearch(value);
+    pagination.resetPage();
+  };
+
+  const handleDifficultyChange = (value: string) => {
+    filters.setDifficulty(value);
+    pagination.resetPage();
+  };
+
+  const handleTagChange = (value: string) => {
+    filters.setSelectedTag(value);
+    pagination.resetPage();
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 p-6">
       <ProblemsHeader onCreatePlaylist={playlist.openCreateModal} />
 
       <ProblemsFilters
         search={filters.search}
-        onSearchChange={filters.setSearch}
+        onSearchChange={handleSearchChange}
         difficulty={filters.difficulty}
-        onDifficultyChange={filters.setDifficulty}
+        onDifficultyChange={handleDifficultyChange}
         selectedTag={filters.selectedTag}
-        onTagChange={filters.setSelectedTag}
+        onTagChange={handleTagChange}
         allTags={filters.allTags}
       />
 

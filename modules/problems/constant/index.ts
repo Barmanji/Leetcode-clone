@@ -1,6 +1,6 @@
 // for problem form that user will see
 export const DIFFICULTIES = ["EASY", "MEDIUM", "HARD"];
-export const ITEMS_PER_PAGE = 5;
+export const ITEMS_PER_PAGE = 8;
 
 export const DEFAULT_FILTERS = {
   search: "",
