@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -58,7 +57,7 @@ function SolvedCheckbox({ checked }: { checked: boolean }) {
     <Checkbox
       checked={checked}
       disabled
-      className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+      className="disabled:opacity-100 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600 dark:data-[state=checked]:bg-green-600"
     />
   );
 }
@@ -81,7 +80,7 @@ function TagsList({ tags = [] }: { tags?: string[] }) {
         <Badge
           key={idx}
           variant="outline"
-          className="text-xs bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-50"
+          className="text-xs bg-orange-700 text-orange-100 border-orange-400 hover:bg-orange-900"
         >
           {tag}
         </Badge>
@@ -96,7 +95,9 @@ function DifficultyBadge({
   difficulty?: "EASY" | "MEDIUM" | "HARD";
 }) {
   return (
-    <Badge className={`${getDifficultyColor(difficulty ?? "EASY")} border-0 font-medium`}>
+    <Badge
+      className={`${getDifficultyColor(difficulty ?? "EASY")} border-0 font-medium`}
+    >
       {difficulty}
     </Badge>
   );
@@ -125,7 +126,12 @@ function ActionButtons({
           >
             <TrashIcon className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" disabled className="cursor-pointer">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled
+            className="cursor-pointer"
+          >
             <PencilIcon className="h-4 w-4" />
           </Button>
         </>

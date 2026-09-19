@@ -9,9 +9,9 @@ export const DEFAULT_FILTERS = {
 };
 
 export const DIFFICULTY_COLORS = {
-  EASY:   "bg-green-800 text-green-100 hover:bg-green-600",
-  MEDIUM: "bg-amber-600 text-amber-100 hover:bg-amber-500",
-  HARD:   "bg-red-800 text-red-100 hover:bg-red-600",
+  EASY:   "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-800 dark:text-green-100 dark:hover:bg-green-600",
+  MEDIUM: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100 dark:bg-amber-600 dark:text-amber-100 dark:hover:bg-amber-500",
+  HARD:   "bg-red-100 text-red-800 hover:bg-red-100 dark:bg-red-800 dark:text-red-100 dark:hover:bg-red-600",
 };
 
 // helper to get diffcolor
