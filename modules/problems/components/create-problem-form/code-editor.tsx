@@ -5,7 +5,7 @@ const LANGUAGE_MAP: Record<string, string> = {
   javascript: "javascript",
   python: "python",
   java: "java",
-  cpp: "c++",
+  cpp: "cpp",
   rust: "rust",
   typescript: "typescript",
 };
