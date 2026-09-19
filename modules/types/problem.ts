@@ -34,7 +34,7 @@ export interface Submission {
   id: string;
   userId: string;
   problemId: string;
-  sourceCode: unknown;
+  sourceCode: string;
   language: string;
   stdin: string | null;
   stdout: string | null;
@@ -45,6 +45,7 @@ export interface Submission {
   time: string | null;
   createdAt: Date;
   testCases?: TestCaseResult[];
+  problem?: Problem;
 }
 
 export interface TestCaseResult {

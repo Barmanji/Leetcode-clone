@@ -382,6 +382,9 @@ export const getAllSubmissionByCurrentUserForProblem = async (
             ? user.id
             : undefined,
       },
+      include: {
+        testCases: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
