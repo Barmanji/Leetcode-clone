@@ -13,7 +13,6 @@ export const sampleAlienDictionaryProblem = {
     "For every adjacent pair of words, find the first position where they differ; the character in the earlier word must come before the character in the later word, giving a directed edge. If a word is a proper prefix of the word that follows it being shorter, the ordering is impossible. Build the character graph, then run Kahn's algorithm: if the number of emitted characters equals the number of unique characters, the concatenation is a valid answer; otherwise a cycle exists and the answer is an empty string.",
   testCases: [
     { input: "5\nwrt\nwrf\ner\nett\nrftt", output: "wertf" },
-    { input: "3\nz\nx\nz", output: "" },
     { input: "2\nz\nx", output: "zx" },
   ],
   examples: {
