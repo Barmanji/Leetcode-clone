@@ -6,7 +6,7 @@ import type { UserData } from '@/modules/types/problem';
 const ProblemsPage = async () => {
     const user = await getCurrentUserData() as UserData | undefined;
 
-    const result = await getAllProblems();
+    const result = await getAllProblems(user?.id);
 
     if (!result.success) {
       return (

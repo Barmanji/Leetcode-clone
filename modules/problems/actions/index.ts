@@ -17,11 +17,17 @@ import type {
 } from "@/modules/types/actions";
 import type { Problem, Submission } from "@/modules/types/problem";
 
-export const getAllProblems = async (): Promise<ActionResult<Problem[]>> => {
+export const getAllProblems = async (
+  userId?: string,
+): Promise<ActionResult<Problem[]>> => {
   try {
     const problems = await prisma.problem.findMany({
       include: {
-        solvedBy: true,
+        solvedBy: {
+          where: {
+            userId: userId ?? "",
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
