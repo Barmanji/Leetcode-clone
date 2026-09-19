@@ -80,7 +80,7 @@ function TagsList({ tags = [] }: { tags?: string[] }) {
         <Badge
           key={idx}
           variant="outline"
-          className="text-xs bg-orange-700 text-orange-100 border-orange-400 hover:bg-orange-900"
+          className="text-xs bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-50 dark:bg-orange-700 dark:text-orange-100 dark:border-orange-400 dark:hover:bg-orange-900"
         >
           {tag}
         </Badge>
