@@ -1,100 +1,72 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-    provider = "prisma-client"
-    output   = "../lib/generated/prisma"
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
 }
 
 datasource db {
-    provider = "postgresql"
-}
-
-enum UserRole {
-    USER
-    ADMIN
-}
-
-enum Difficulty {
-    EASY
-    MEDIUM
-    HARD
+  provider = "postgresql"
 }
 
 model User {
-    id      String   @id @default(cuid())
-    clerkId String   @unique
-    name    String?
-    email   String   @unique
-    role    UserRole @default(USER)
-
-    firstName String?
-    lastName  String?
-    imageUrl  String?
-
-    problems       Problem[]
-    submissions    Submission[]
-    solvedProblems ProblemSolved[]
-    playlists      Playlist[]
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
+  id             String          @id @default(cuid())
+  clerkId        String          @unique
+  email          String          @unique
+  name           String?
+  createdAt      DateTime        @default(now())
+  firstName      String?
+  imageUrl       String?
+  lastName       String?
+  role           UserRole        @default(USER)
+  updatedAt      DateTime        @default(now())
+  playlists      Playlist[]
+  problems       Problem[]
+  solvedProblems ProblemSolved[]
+  submissions    Submission[]
 }
 
-
 model Problem {
-  id          String     @id @default(cuid())
-  //  basic info
-  title       String
-  description String
-  difficulty  Difficulty
-  tags        String[]
-  examples    Json
-  constraints String
-  hints       String?
-  editorial   String?
-
-  testCases          Json
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  difficulty         Difficulty
+  tags               String[]
+  examples           Json
+  constraints        String
+  editorial          String?
   codeSnippets       Json
+  createdAt          DateTime            @default(now())
+  hints              String?
   referenceSolutions Json
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  submissions       Submission[]
-  solvedBy          ProblemSolved[]
-  problemsPlaylists ProblemInPlaylist[]
+  testCases          Json
+  updatedAt          DateTime            @updatedAt
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemsPlaylists  ProblemInPlaylist[]
+  solvedBy           ProblemSolved[]
+  submissions        Submission[]
 }
 
 model Submission {
-  id            String  @id @default(cuid())
+  id            String           @id @default(cuid())
   userId        String
+  compileOutput String?
+  createdAt     DateTime         @default(now())
+  language      String
+  memory        String?
   problemId     String
   sourceCode    Json
-  language      String
+  status        String
+  stderr        String?
   stdin         String?
   stdout        String?
-  stderr        String?
-  compileOutput String?
-  status        String
-  memory        String?
   time          String?
-
-  createdAt DateTime @default(now())
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
-
-  testCases TestCaseResult[]
+  problem       Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testCases     TestCaseResult[]
 }
 
 model TestCaseResult {
-  id            String  @id @default(uuid())
+  id            String     @id @default(uuid())
   submissionId  String
   testCase      Int
   passed        Boolean
@@ -105,46 +77,50 @@ model TestCaseResult {
   status        String
   memory        String?
   time          String?
-
-  createdAt DateTime @default(now())
-
-  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  submission    Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
 }
 
 model ProblemSolved {
   id        String   @id @default(cuid())
   userId    String
-  problemId String
   createdAt DateTime @default(now())
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, problemId])
 }
 
 model Playlist {
-  id          String   @id @default(cuid())
+  id          String              @id @default(cuid())
   name        String
   description String?
   userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  problems ProblemInPlaylist[]
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problems    ProblemInPlaylist[]
 
   @@unique([name, userId])
 }
 
 model ProblemInPlaylist {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   playlistId String
   problemId  String
+  createdAt  DateTime @default(now())
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  problem    Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
 
-  createdAt DateTime @default(now())
+enum UserRole {
+  USER
+  ADMIN
+}
 
-  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
-  problem  Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }

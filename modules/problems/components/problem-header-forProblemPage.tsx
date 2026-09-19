@@ -16,7 +16,7 @@ export function ProblemHeaderForProblemPage({ problem }: ProblemHeaderProps) {
     <div className="mb-4 flex items-start justify-between">
       <div>
         <div className="flex items-center gap-4 mb-4">
-          <Link href="/">
+          <Link href="/problems">
             <Button variant="outline" size="icon" className="cursor-pointer">
               <ArrowLeft className="size-4" />
             </Button>
