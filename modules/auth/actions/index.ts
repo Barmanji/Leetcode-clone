@@ -72,7 +72,11 @@ export const getCurrentUserData = async () => {
         clerkId: user.id,
       },
       include: {
-        submissions: true,
+        submissions: {
+          include: {
+            problem: true,
+          },
+        },
         solvedProblems: true,
         playlists: {
           include: {
