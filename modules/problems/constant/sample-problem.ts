@@ -1,4 +1,18 @@
 // for admin form that admin will create
+import { sampleAlienDictionaryProblem } from "./sample-problems/alien-dictionary";
+import { sampleBestTimeToBuyAndSellStockProblem } from "./sample-problems/best-time-to-buy-and-sell-stock";
+import { sampleCoinChangeProblem } from "./sample-problems/coin-change";
+import { sampleCourseScheduleProblem } from "./sample-problems/course-schedule";
+import { sampleEditDistanceProblem } from "./sample-problems/edit-distance";
+import { sampleHouseRobberProblem } from "./sample-problems/house-robber";
+import { sampleLongestSubstringWithoutRepeatingCharactersProblem } from "./sample-problems/longest-substring-without-repeating-characters";
+import { sampleMaximumDepthOfBinaryTreeProblem } from "./sample-problems/maximum-depth-of-binary-tree";
+import { sampleMaximumSubarrayProblem } from "./sample-problems/maximum-subarray";
+import { sampleNumberOfIslandsProblem } from "./sample-problems/number-of-islands";
+import { sampleReverseLinkedListProblem } from "./sample-problems/reverse-linked-list";
+import { sampleTwoSumProblem } from "./sample-problems/two-sum";
+import { sampleValidParenthesesProblem } from "./sample-problems/valid-parentheses";
+
 export const sampleDPProblem = {
   title: "Climbing Stairs",
   description:
@@ -399,6 +413,8 @@ export const sampleStringProblem = {
     },
     TYPESCRIPT: {
       input: 's = "A man, a plan, a canal: Panama"',
+      output: "true",
+      explanation: '"amanaplanacanalpanama" is a palindrome.',
     },
   },
   codeSnippets: {
@@ -447,12 +463,9 @@ if __name__ == "__main__":
     JAVA: `import java.util.Scanner;
 
 public class Main {
-    public static String preprocess(String s) {
-        return s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-    }
-
     public static boolean isPalindrome(String s) {
-
+        // Write your code here
+        return false;
     }
 
     public static void main(String[] args) {
@@ -464,6 +477,59 @@ public class Main {
     }
 }
 `,
+    CPP: `#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+bool isPalindrome(string s) {
+    // Write your code here
+    return false;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+
+    bool result = isPalindrome(s);
+    cout << (result ? "true" : "false") << endl;
+
+    return 0;
+}`,
+    RUST: `use std::io;
+
+fn is_palindrome(s: &str) -> bool {
+    // Write your code here
+    false
+}
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Failed to read line");
+    let input = input.trim_end_matches('\\n').trim_end_matches('\\r');
+
+    let result = is_palindrome(input);
+    println!("{}", result);
+}`,
+    TYPESCRIPT: `// @ts-nocheck
+function isPalindrome(s: string): boolean {
+  // Write your code here
+  return false;
+}
+
+// Input parsing
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', (line) => {
+  const result = isPalindrome(line);
+  console.log(result ? "true" : "false");
+  rl.close();
+});`,
   },
   referenceSolutions: {
     JAVASCRIPT: `/**
@@ -555,10 +621,160 @@ public class Main {
     }
 }
 `,
+    RUST: `use std::io;
+
+fn is_palindrome(s: &str) -> bool {
+    let filtered: Vec<char> = s
+        .chars()
+        .filter(|c| c.is_alphanumeric())
+        .map(|c| c.to_ascii_lowercase())
+        .collect();
+
+    let mut left = 0;
+    let mut right = filtered.len();
+    if right == 0 {
+        return true;
+    }
+    right -= 1;
+
+    while left < right {
+        if filtered[left] != filtered[right] {
+            return false;
+        }
+        left += 1;
+        right -= 1;
+    }
+
+    true
+}
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Failed to read line");
+    let input = input.trim_end_matches('\\n').trim_end_matches('\\r');
+
+    let result = is_palindrome(input);
+    println!("{}", result);
+}`,
+    CPP: `#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+bool isPalindrome(string s) {
+    string filtered;
+    for (char c : s) {
+        if (isalnum((unsigned char)c)) {
+            filtered += tolower((unsigned char)c);
+        }
+    }
+
+    int left = 0, right = (int)filtered.size() - 1;
+    while (left < right) {
+        if (filtered[left] != filtered[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true;
+}
+
+int main() {
+    string s;
+    getline(cin, s);
+
+    bool result = isPalindrome(s);
+    cout << (result ? "true" : "false") << endl;
+
+    return 0;
+}`,
+    TYPESCRIPT: `// @ts-nocheck
+function isPalindrome(s: string): boolean {
+  // Convert to lowercase and remove non-alphanumeric characters
+  s = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Check if it's a palindrome
+  let left = 0;
+  let right = s.length - 1;
+
+  while (left < right) {
+    if (s[left] !== s[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
+}
+
+// Input parsing
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', (line) => {
+  const result = isPalindrome(line);
+  console.log(result ? "true" : "false");
+  rl.close();
+});`,
   },
 };
 
-export const SAMPLE_PROBLEMS = {
-  DP: sampleDPProblem,
-  string: sampleStringProblem,
+export type SampleProblem = typeof sampleDPProblem;
+
+export interface SampleProblemOption {
+  key: string;
+  label: string;
+}
+
+export const SAMPLE_PROBLEMS: Record<string, SampleProblem> = {
+  "climbing-stairs": sampleDPProblem,
+  "valid-palindrome": sampleStringProblem,
+  "two-sum": sampleTwoSumProblem,
+  "reverse-linked-list": sampleReverseLinkedListProblem,
+  "valid-parentheses": sampleValidParenthesesProblem,
+  "best-time-to-buy-and-sell-stock": sampleBestTimeToBuyAndSellStockProblem,
+  "maximum-subarray": sampleMaximumSubarrayProblem,
+  "longest-substring-without-repeating-characters":
+    sampleLongestSubstringWithoutRepeatingCharactersProblem,
+  "house-robber": sampleHouseRobberProblem,
+  "coin-change": sampleCoinChangeProblem,
+  "maximum-depth-of-binary-tree": sampleMaximumDepthOfBinaryTreeProblem,
+  "edit-distance": sampleEditDistanceProblem,
+  "number-of-islands": sampleNumberOfIslandsProblem,
+  "course-schedule": sampleCourseScheduleProblem,
+  "alien-dictionary": sampleAlienDictionaryProblem,
 };
+
+export const SAMPLE_PROBLEM_OPTIONS: SampleProblemOption[] = [
+  { key: "climbing-stairs", label: "Climbing Stairs" },
+  { key: "valid-palindrome", label: "Valid Palindrome" },
+  { key: "two-sum", label: "Two Sum" },
+  { key: "reverse-linked-list", label: "Reverse Linked List" },
+  { key: "valid-parentheses", label: "Valid Parentheses" },
+  {
+    key: "best-time-to-buy-and-sell-stock",
+    label: "Best Time to Buy and Sell Stock",
+  },
+  { key: "maximum-subarray", label: "Maximum Subarray" },
+  {
+    key: "longest-substring-without-repeating-characters",
+    label: "Longest Substring Without Repeating Characters",
+  },
+  { key: "house-robber", label: "House Robber" },
+  { key: "coin-change", label: "Coin Change" },
+  {
+    key: "maximum-depth-of-binary-tree",
+    label: "Maximum Depth of Binary Tree",
+  },
+  { key: "edit-distance", label: "Edit Distance" },
+  { key: "number-of-islands", label: "Number of Islands" },
+  { key: "course-schedule", label: "Course Schedule" },
+  { key: "alien-dictionary", label: "Alien Dictionary" },
+];

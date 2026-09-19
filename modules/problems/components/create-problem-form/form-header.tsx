@@ -2,6 +2,7 @@
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
+import { SAMPLE_PROBLEM_OPTIONS } from "@/modules/problems/constant/sample-problem";
 import type { FormHeaderProps } from "@/modules/types/components";
 
 export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHeaderProps) {
@@ -14,10 +15,6 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHead
         </CardTitle>
 
         <div className="flex flex-col md:flex-row gap-3">
-          <SampleTypeToggle
-            sampleType={sampleType}
-            setSampleType={setSampleType}
-          />
           <Button
             type="button"
             variant="secondary"
@@ -30,31 +27,26 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: FormHead
           </Button>
         </div>
       </div>
-    </CardHeader>
-  );
-}
 
-function SampleTypeToggle({ sampleType, setSampleType }: { sampleType: string; setSampleType: (type: string) => void }) {
-  return (
-    <div className="flex border rounded-md">
-      <Button
-        type="button"
-        variant={sampleType === "DP" ? "default" : "outline"}
-        size="sm"
-        className="rounded-r-none cursor-pointer"
-        onClick={() => setSampleType("DP")}
-      >
-        DP Problem
-      </Button>
-      <Button
-        type="button"
-        variant={sampleType === "string" ? "default" : "outline"}
-        size="sm"
-        className="rounded-l-none cursor-pointer"
-        onClick={() => setSampleType("string")}
-      >
-        String Problem
-      </Button>
-    </div>
+      <div className="mt-4">
+        <p className="text-sm text-muted-foreground mb-2">
+          Pick a sample problem and click &ldquo;Load Sample&rdquo;:
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {SAMPLE_PROBLEM_OPTIONS.map((option) => (
+            <Button
+              key={option.key}
+              type="button"
+              variant={sampleType === option.key ? "default" : "outline"}
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => setSampleType(option.key)}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+    </CardHeader>
   );
 }

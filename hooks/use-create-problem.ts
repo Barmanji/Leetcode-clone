@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { defaultFormValues, problemSchema } from "@/modules/problems/schema";
-import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problem";
+import { SAMPLE_PROBLEMS, SAMPLE_PROBLEM_OPTIONS } from "@/modules/problems/constant/sample-problem";
 import { z } from "zod";
 
 type ProblemFormData = z.infer<typeof problemSchema>;
@@ -14,7 +14,9 @@ type ProblemFormData = z.infer<typeof problemSchema>;
 export function useCreateProblem() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [sampleType, setSampleType] = useState("DP");
+  const [sampleType, setSampleType] = useState(
+    SAMPLE_PROBLEM_OPTIONS[0].key,
+  );
 
   const form = useForm<ProblemFormData>({
     resolver: zodResolver(problemSchema),
