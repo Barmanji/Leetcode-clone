@@ -1,5 +1,7 @@
-# CodeLeet - [Link](https://codeleet.barmanji.com/)
+# CodeLeet
 A browser-based coding platform where users solve programming problems, run code against test cases via Judge0, and track submission history. Built with Next.js App Router, Prisma, Clerk auth, and Monaco Editor.
+
+> **Live Demo:** *(https://codeleet.barmanji.com/)*
 
 ## Tech Stack
 
