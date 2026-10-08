@@ -143,7 +143,7 @@ Open TCP 3000 in the EC2 security group. The app is at `http://<ec2-public-ip>:3
 ## How It Works
 
 ### Architecture (HLD)
-[![Architecture diagram of barmanji/t3-chat-clone](https://gitdiagram.com/barmanji/t3-chat-clone/diagram.png)](https://gitdiagram.com/barmanji/t3-chat-clone?utm_source=readme&utm_medium=picture)
+[![Architecture diagram of barmanji/leetcode-clone](https://gitdiagram.com/barmanji/leetcode-clone/diagram.png)](https://gitdiagram.com/barmanji/leetcode-clone?utm_source=readme&utm_medium=picture)
 
 ### Request Flow
 
