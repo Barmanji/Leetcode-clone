@@ -31,9 +31,9 @@ export function ProblemHeaderForProblemPage({ problem }: ProblemHeaderProps) {
             {problem?.difficulty}
           </Badge>
         </div>
-        <div className="flex flex-wrap gap-2 dark:bg-amber-900">
+        <div className="flex flex-wrap gap-2 ">
           {problem?.tags.map((tag: string) => (
-            <Badge key={tag} variant="outline" className="text-sm">
+            <Badge key={tag} variant="outline" className="text-sm dark:bg-amber-900">
               {tag}
             </Badge>
           ))}
